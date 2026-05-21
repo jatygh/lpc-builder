@@ -14,6 +14,14 @@ type CurrentSelectionsAttrs = {
   >;
 };
 
+// Selection keys that correspond to body type — should not be deletable
+// (deleting them orphans the body type state)
+const BODY_SELECTION_KEYS = new Set(["body", "shadow", "body_type"]);
+
+function isBodyKey(key: string): boolean {
+  return BODY_SELECTION_KEYS.has(key) || key.startsWith("body");
+}
+
 export const CurrentSelections: m.Component<CurrentSelectionsAttrs> = {
   view(vnode) {
     const { catalog } = vnode.attrs;
@@ -37,6 +45,18 @@ export const CurrentSelections: m.Component<CurrentSelectionsAttrs> = {
 
     return m("div", [
       m("h3.title.is-5", "Current Selections"),
+      // Body type badge (non-deletable)
+      state.bodyType
+        ? m("div.mb-2", [
+            m(
+              "span.tag.is-medium.is-dark",
+              { title: "Change body type using the Body Type selector above" },
+              [
+                m("span", `Body: ${state.bodyType}`),
+              ],
+            ),
+          ])
+        : null,
       m(
         "div.tags",
         Object.entries(state.selections).map(([selectionKey, selection]) => {
@@ -75,6 +95,8 @@ export const CurrentSelections: m.Component<CurrentSelectionsAttrs> = {
           }
           tooltipText += `${licensesText}\n${animsText}`;
 
+          const isDeletable = !isBodyKey(selectionKey);
+
           return m(
             "span.tag.is-medium",
             {
@@ -85,11 +107,13 @@ export const CurrentSelections: m.Component<CurrentSelectionsAttrs> = {
             [
               m("span", selection.name),
               !isCompatible ? m("span.ml-1", "⚠️") : null,
-              m("button.delete.is-small", {
-                onclick: () => {
-                  delete state.selections[selectionKey];
-                },
-              }),
+              isDeletable
+                ? m("button.delete.is-small", {
+                    onclick: () => {
+                      delete state.selections[selectionKey];
+                    },
+                  })
+                : null,
             ],
           );
         }),
