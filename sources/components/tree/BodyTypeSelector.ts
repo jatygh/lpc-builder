@@ -1,6 +1,7 @@
 // Body type selector component (styled as tree category)
 import m from "mithril";
 import { state } from "../../state/state.ts";
+import { renderCharacter } from "../../canvas/renderer.ts";
 import { BODY_TYPES } from "../../state/constants.ts";
 import { capitalize } from "../../utils/helpers.ts";
 
@@ -36,7 +37,18 @@ export const BodyTypeSelector: m.Component<Record<string, never>, State> = {
                   {
                     class: state.bodyType === type ? "is-primary" : "",
                     onclick: () => {
-                      state.bodyType = type;
+                      // Force re-render even if same type selected
+                      // (handles case where body selection was deleted from tags)
+                      if (state.bodyType === type) {
+                        state.bodyType = "";
+                        requestAnimationFrame(() => {
+                          state.bodyType = type;
+                          renderCharacter(state.selections, state.bodyType);
+                          m.redraw();
+                        });
+                      } else {
+                        state.bodyType = type;
+                      }
                     },
                   },
                   capitalize(type),
