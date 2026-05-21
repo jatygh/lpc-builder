@@ -21,6 +21,7 @@ import {
   exportIndividualFrames,
 } from "../../state/zip.ts";
 import { debugLog } from "../../utils/debug.ts";
+import { SaveToVasa } from "./SaveToVasa.ts";
 import type { CatalogReader } from "../../state/catalog.ts";
 
 const zipExportTitle = "Wait for layer data to finish loading";
@@ -166,6 +167,7 @@ export const Download: m.Component<DownloadAttrs> = {
             "Import from Clipboard (JSON)",
           ),
         ]),
+        m(SaveToVasa),
       ],
     );
   },
