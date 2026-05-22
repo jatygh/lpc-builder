@@ -46,9 +46,6 @@ export const BodyTypeSelector: m.Component<Record<string, never>, State> = {
                           m.redraw();
                         });
                       } else {
-                        // Clear body/shadow selections so they regenerate for new type
-                        delete state.selections["body"];
-                        delete state.selections["shadow"];
                         state.bodyType = type;
                       }
                     },
