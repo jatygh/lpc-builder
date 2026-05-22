@@ -1,7 +1,7 @@
 // SaveToVasa.ts — Save/Load NPC to jatygh/vasa npc_library
 import m from "mithril";
 import { state } from "../../state/state.ts";
-import { getCanvas } from "../../canvas/renderer.ts";
+import { getCanvas, renderCharacter } from "../../canvas/renderer.ts";
 import { canvasToBlob } from "../../canvas/canvas-utils.ts";
 import { exportStateAsJSON, importStateFromJSON, serializeLayersForJson } from "../../state/json.ts";
 import { drawCalls } from "../../canvas/renderer.ts";
@@ -128,6 +128,8 @@ async function loadNpc(jsonPath: string) {
     npcPrefix = decoded.prefix || "";
     const imported = importStateFromJSON(JSON.stringify(decoded.lpcConfig));
     Object.assign(state, imported);
+    // Force full re-render with the loaded body type
+    await renderCharacter(state.selections, state.bodyType);
     showLoadPanel = false;
     loadListStatus = "";
     saveStatus = `✓ Loaded ${npcId}`;
