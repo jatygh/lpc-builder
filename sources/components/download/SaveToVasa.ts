@@ -124,7 +124,7 @@ async function loadNpc(jsonPath: string) {
     const data = await ghGet(jsonPath, token);
     const decoded = JSON.parse(atob((data as { content: string }).content.replace(/\n/g, "")));
     npcId = decoded.id || "";
-    npcName = decoded.name || "";
+    npcName = decoded.name && decoded.name !== decoded.id ? decoded.name : "";
     npcPrefix = decoded.prefix || "";
     const imported = importStateFromJSON(JSON.stringify(decoded.lpcConfig));
     Object.assign(state, imported);
@@ -159,7 +159,7 @@ async function saveToVasa() {
     const layerJson = exportStateAsJSON(state, serializeLayersForJson(drawCalls));
     const metadata = {
       id,
-      name: npcName.trim() || id,
+      name: npcName.trim() || "",
       prefix: npcPrefix.trim() || id.split("_")[0] || "",
       lpcConfig: JSON.parse(layerJson),
     };
