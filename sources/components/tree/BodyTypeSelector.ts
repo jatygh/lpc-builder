@@ -37,9 +37,8 @@ export const BodyTypeSelector: m.Component<Record<string, never>, State> = {
                   {
                     class: state.bodyType === type ? "is-primary" : "",
                     onclick: () => {
-                      // Force re-render even if same type selected
-                      // (handles case where body selection was deleted from tags)
                       if (state.bodyType === type) {
+                        // Force re-render if same type re-clicked (e.g. after bad state)
                         state.bodyType = "";
                         requestAnimationFrame(() => {
                           state.bodyType = type;
@@ -47,6 +46,9 @@ export const BodyTypeSelector: m.Component<Record<string, never>, State> = {
                           m.redraw();
                         });
                       } else {
+                        // Clear body/shadow selections so they regenerate for new type
+                        delete state.selections["body"];
+                        delete state.selections["shadow"];
                         state.bodyType = type;
                       }
                     },
