@@ -40,18 +40,6 @@ export const CurrentSelections: m.Component<CurrentSelectionsAttrs> = {
 
     return m("div", [
       m("h3.title.is-5", "Current Selections"),
-      // Body type badge (non-deletable)
-      state.bodyType
-        ? m("div.mb-2", [
-            m(
-              "span.tag.is-medium.is-dark",
-              { title: "Change body type using the Body Type selector above" },
-              [
-                m("span", `Body: ${state.bodyType}`),
-              ],
-            ),
-          ])
-        : null,
       m(
         "div.tags",
         Object.entries(state.selections).map(([selectionKey, selection]) => {
