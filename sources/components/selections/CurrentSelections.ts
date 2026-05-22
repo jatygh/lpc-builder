@@ -14,13 +14,8 @@ type CurrentSelectionsAttrs = {
   >;
 };
 
-// Selection keys that correspond to body type — should not be deletable
-// (deleting them orphans the body type state)
-const BODY_SELECTION_KEYS = new Set(["body", "shadow", "body_type"]);
-
-function isBodyKey(key: string): boolean {
-  return BODY_SELECTION_KEYS.has(key) || key.startsWith("body");
-}
+// Only the base body sprite and shadow are non-deletable (they're driven by bodyType)
+const NON_DELETABLE_KEYS = new Set(["body", "shadow"]);
 
 export const CurrentSelections: m.Component<CurrentSelectionsAttrs> = {
   view(vnode) {
@@ -95,7 +90,7 @@ export const CurrentSelections: m.Component<CurrentSelectionsAttrs> = {
           }
           tooltipText += `${licensesText}\n${animsText}`;
 
-          const isDeletable = !isBodyKey(selectionKey);
+          const isDeletable = !NON_DELETABLE_KEYS.has(selectionKey);
 
           return m(
             "span.tag.is-medium",
